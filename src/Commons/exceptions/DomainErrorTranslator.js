@@ -34,6 +34,8 @@ DomainErrorTranslator._directories = {
   'DELETE_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new NotFoundError('thread id dan id komentar harus string'),
   'DELETE_REPLY_USE_CASE.NOT_CONTAIN_NEEDED_PAYLOAD': new NotFoundError('harus mengirimkan id thread, id komentar, dan id balasan'),
   'DELETE_REPLY_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new NotFoundError('thread id, id komentar, dan id balasan harus string'),
+  'LIKE_COMMENT_USE_CASE.NOT_CONTAIN_NEEDED_PAYLOAD': new NotFoundError('harus mengirimkan id thread dan id komentar'),
+  'LIKE_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new NotFoundError('thread id dan id komentar harus string'),
 };
 
 module.exports = DomainErrorTranslator;
