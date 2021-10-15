@@ -1,3 +1,4 @@
+forum-api-app-server.pem
 node_modules
 .idea
 config/database/test.json
