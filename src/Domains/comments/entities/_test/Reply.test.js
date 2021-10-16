@@ -5,6 +5,7 @@ describe('a Reply entities', () => {
     const payload = {
       id: 'reply-id',
       username: 'dicoding',
+      likeCount: 0,
     };
 
     expect(() => new Reply(payload)).toThrowError('REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
@@ -17,6 +18,7 @@ describe('a Reply entities', () => {
       date: '2011-10-05T14:48:00',
       content: 2011,
       deleted: false,
+      likeCount: '0',
     };
 
     expect(() => new Reply(payload)).toThrowError('REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
@@ -29,6 +31,7 @@ describe('a Reply entities', () => {
       date: new Date(),
       content: 'ini konten balasan',
       deleted: false,
+      likeCount: 0,
     };
 
     const {
@@ -36,12 +39,14 @@ describe('a Reply entities', () => {
       username,
       date,
       content,
+      likeCount,
     } = new Reply(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
+    expect(likeCount).toEqual(payload.likeCount);
   });
 
   it('should create reply object correctly when deleted', () => {
@@ -51,6 +56,7 @@ describe('a Reply entities', () => {
       date: new Date(),
       content: 'ini konten balasan',
       deleted: true,
+      likeCount: 1,
     };
 
     const {
@@ -58,11 +64,13 @@ describe('a Reply entities', () => {
       username,
       date,
       content,
+      likeCount,
     } = new Reply(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
+    expect(likeCount).toEqual(payload.likeCount);
     expect(content).toEqual('**balasan telah dihapus**');
   });
 });
