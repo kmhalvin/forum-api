@@ -39,11 +39,22 @@ http {
 	include mime.types;
 	sendfile on;
 
-	limit_req_zone $binary_remote_addr zone=one:10m rate=30r/m;
+	# access controls
+	limit_req_zone $binary_remote_addr zone=one:10m rate=90r/m;
+	absolute_redirect off;
 
 	server {
 		listen <%= ENV['PORT'] %>;
 		server_name _;
+
+		location = /threads {
+			proxy_pass http://<%= ENV['HOST'] %>:<%= ENV['APP_PORT'] %>;
+			proxy_redirect off;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+
+			limit_req zone=one;
+		}
 
 		location /threads/ {
 			proxy_pass http://<%= ENV['HOST'] %>:<%= ENV['APP_PORT'] %>;
