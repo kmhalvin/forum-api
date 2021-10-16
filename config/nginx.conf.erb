@@ -42,7 +42,7 @@ http {
 	limit_req_zone $binary_remote_addr zone=one:10m rate=30r/m;
 
 	server {
-		listen <%= ENV["PORT"] %>;
+		listen <%= ENV["HOST"] %>:<%= ENV["PORT"] %>;
 		server_name _;
 
 		location /threads/ {
