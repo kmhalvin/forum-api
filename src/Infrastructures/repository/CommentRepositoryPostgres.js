@@ -56,7 +56,7 @@ ORDER BY c.replied_to NULLS FIRST, c.date ASC`,
         comments.push(new Comment({ ...row, replies: [], likeCount: +row.like_count }));
       } else {
         comments[comments.findIndex(({ id }) => id === row.reply)]
-          .replies.push(new Reply({ ...row }));
+          .replies.push(new Reply({ ...row, likeCount: +row.like_count }));
       }
     });
     return comments;
@@ -72,6 +72,19 @@ ORDER BY c.replied_to NULLS FIRST, c.date ASC`,
 
     if (!result.rowCount) {
       throw new NotFoundError('komentar tidak ditemukan');
+    }
+  }
+
+  async verifyAvailableReply(id) {
+    const query = {
+      text: 'SELECT id FROM comments WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError('balasan tidak ditemukan');
     }
   }
 

@@ -192,6 +192,11 @@ describe('CommentRepositoryPostgres', () => {
         commentId: 'comment-456',
         owner: 'user-123',
       });
+      await LikesTableTestHelper.addLike({
+        id: 'like-456',
+        commentId: 'reply-456',
+        owner: 'user-123',
+      });
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action & Assert
@@ -208,6 +213,7 @@ describe('CommentRepositoryPostgres', () => {
               date: date2,
               content: '**balasan telah dihapus**',
               deleted: true,
+              likeCount: 0,
             }),
             new Reply({
               id: 'reply-456',
@@ -215,6 +221,7 @@ describe('CommentRepositoryPostgres', () => {
               date: date3,
               content: 'thanks for the reply defaultuser 2!',
               deleted: false,
+              likeCount: 1,
             }),
           ],
           content: '**komentar telah dihapus**',
@@ -235,7 +242,7 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('verifyAvailableComment', () => {
-    it('should throw NotFoundError when comment / reply not available', () => {
+    it('should throw NotFoundError when comment not available', () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
@@ -244,7 +251,7 @@ describe('CommentRepositoryPostgres', () => {
         .rejects.toThrowError(NotFoundError);
     });
 
-    it('should not throw NotFoundError when comment / reply available', async () => {
+    it('should not throw NotFoundError when comment available', async () => {
       // Arrange
       await CommentsTableTestHelper.addComment({
         id: 'comment-123',
@@ -253,6 +260,29 @@ describe('CommentRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(commentRepositoryPostgres.verifyAvailableComment('comment-123'))
+        .resolves.not.toThrowError(NotFoundError);
+    });
+  });
+
+  describe('verifyAvailableReply', () => {
+    it('should throw NotFoundError when reply not available', () => {
+      // Arrange
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      return expect(commentRepositoryPostgres.verifyAvailableReply('reply-123'))
+        .rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when reply available', async () => {
+      // Arrange
+      await CommentsTableTestHelper.addComment({
+        id: 'reply-123',
+      });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyAvailableReply('reply-123'))
         .resolves.not.toThrowError(NotFoundError);
     });
   });
