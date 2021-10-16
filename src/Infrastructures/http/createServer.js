@@ -9,7 +9,7 @@ const threads = require('../../Interfaces/http/api/threads');
 const createServer = async (container) => {
   const server = Hapi.server({
     host: process.env.HOST,
-    port: process.env.PORT,
+    port: process.env.APP_PORT || process.env.PORT,
   });
 
   await server.register(Jwt);
