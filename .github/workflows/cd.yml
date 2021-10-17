@@ -18,7 +18,7 @@ jobs:
           git config user.email "kmhapinn3@gmail.com"
           git fetch --prune --unshallow
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-          echo 'web: bin/start-nginx npm start' > Procfile
+          printf "release: npx node-pg-migrate up\nweb: bin/start-nginx npm start" > Procfile
           curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > config/amazon-rds-ca-cert.pem
           git add -A && git commit -m "Added Procfile & Amazon RDS CA Certificate"
       - name: Deploy backend to Heroku
