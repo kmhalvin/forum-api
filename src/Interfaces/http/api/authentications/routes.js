@@ -1,18 +1,48 @@
+const Joi = require('joi');
+
 const routes = (handler) => ([
   {
     method: 'POST',
     path: '/authentications',
-    handler: handler.postAuthenticationHandler,
+    options: {
+      handler: handler.postAuthenticationHandler,
+      validate: {
+        payload: Joi.object({
+          username: Joi.string(),
+          password: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
+      tags: ['api'],
+    },
   },
   {
     method: 'PUT',
     path: '/authentications',
-    handler: handler.putAuthenticationHandler,
+    options: {
+      handler: handler.putAuthenticationHandler,
+      validate: {
+        payload: Joi.object({
+          refreshToken: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
+      tags: ['api'],
+    },
   },
   {
     method: 'DELETE',
     path: '/authentications',
-    handler: handler.deleteAuthenticationHandler,
+    options: {
+      handler: handler.deleteAuthenticationHandler,
+      validate: {
+        payload: Joi.object({
+          refreshToken: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
+      tags: ['api'],
+    },
   },
 ]);
 

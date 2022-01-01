@@ -1,5 +1,8 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
 const ClientError = require('../../Commons/exceptions/ClientError');
 const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
 const users = require('../../Interfaces/http/api/users');
@@ -12,7 +15,11 @@ const createServer = async (container) => {
     port: process.env.APP_PORT || process.env.PORT,
   });
 
-  await server.register(Jwt);
+  await server.register([
+    { plugin: Jwt },
+    { plugin: Inert },
+    { plugin: Vision },
+  ]);
 
   server.auth.strategy('forum_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
@@ -29,6 +36,33 @@ const createServer = async (container) => {
         username: artifacts.decoded.payload.username,
       },
     }),
+  });
+
+  await server.register({
+    plugin: HapiSwagger,
+    options: {
+      schemes: ['http', 'https'],
+      info: {
+        title: 'Forum API Documentation',
+        description: 'Forum API Documentation\n\nAuthorization apiKey value format: `Bearer access_token`',
+        contact: {
+          name: 'Source Code (github)',
+          url: 'https://github.com/kmhalpin/forum-api',
+        },
+      },
+      securityDefinitions: {
+        forum_jwt: {
+          type: 'apiKey',
+          name: 'Authorization',
+          in: 'header',
+        },
+      },
+      security: [
+        {
+          forum_jwt: [],
+        },
+      ],
+    },
   });
 
   await server.register([

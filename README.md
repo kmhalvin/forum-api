@@ -16,7 +16,7 @@
     <a href="https://github.com/kmhalpin/forum-api"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://forum-back.herokuapp.com">View Demo</a>
+    <a href="https://forum-back.herokuapp.com/documentation">View Demo</a>
     ·
     <a href="https://github.com/kmhalpin/forum-api/issues">Report Bug</a>
     ·
