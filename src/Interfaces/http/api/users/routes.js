@@ -1,8 +1,21 @@
+const Joi = require('joi');
+
 const routes = (handler) => ([
   {
     method: 'POST',
     path: '/users',
-    handler: handler.postUserHandler,
+    options: {
+      handler: handler.postUserHandler,
+      validate: {
+        payload: Joi.object({
+          username: Joi.string(),
+          password: Joi.string(),
+          fullname: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
+      tags: ['api'],
+    },
   },
 ]);
 

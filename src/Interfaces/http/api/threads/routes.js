@@ -1,63 +1,137 @@
+const Joi = require('joi');
+
 const routes = (handler) => ([
   {
     method: 'POST',
     path: '/threads',
-    handler: handler.postThreadHandler,
     options: {
+      handler: handler.postThreadHandler,
+      validate: {
+        payload: Joi.object({
+          title: Joi.string(),
+          body: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
   {
     method: 'GET',
     path: '/threads/{threadId}',
-    handler: handler.getThreadHandler,
+    options: {
+      handler: handler.getThreadHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
+      tags: ['api'],
+    },
   },
   {
     method: 'POST',
     path: '/threads/{threadId}/comments',
-    handler: handler.postThreadCommentHandler,
     options: {
+      handler: handler.postThreadCommentHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+        }),
+        payload: Joi.object({
+          content: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
   {
     method: 'DELETE',
     path: '/threads/{threadId}/comments/{commentId}',
-    handler: handler.deleteThreadCommentHandler,
     options: {
+      handler: handler.deleteThreadCommentHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+          commentId: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
   {
     method: 'POST',
     path: '/threads/{threadId}/comments/{commentId}/replies',
-    handler: handler.postThreadReplyHandler,
     options: {
+      handler: handler.postThreadReplyHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+          commentId: Joi.string(),
+        }),
+        payload: Joi.object({
+          content: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
   {
     method: 'DELETE',
     path: '/threads/{threadId}/comments/{commentId}/replies/{replyId}',
-    handler: handler.deleteThreadReplyHandler,
     options: {
+      handler: handler.deleteThreadReplyHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+          commentId: Joi.string(),
+          replyId: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
   {
     method: 'PUT',
     path: '/threads/{threadId}/comments/{commentId}/likes',
-    handler: handler.PutThreadCommentLikesHandler,
     options: {
+      handler: handler.PutThreadCommentLikesHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+          commentId: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
   {
     method: 'PUT',
     path: '/threads/{threadId}/comments/{commentId}/replies/{replyId}/likes',
-    handler: handler.PutThreadReplyLikesHandler,
     options: {
+      handler: handler.PutThreadReplyLikesHandler,
+      validate: {
+        params: Joi.object({
+          threadId: Joi.string(),
+          commentId: Joi.string(),
+          replyId: Joi.string(),
+        }),
+        failAction: 'ignore',
+      },
       auth: 'forum_jwt',
+      tags: ['api'],
     },
   },
 ]);
