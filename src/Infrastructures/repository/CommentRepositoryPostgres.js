@@ -22,8 +22,8 @@ class CommentRepositoryPostgres extends CommentRepository {
       values: [id, content, threadId, owner, null, date, false],
     };
 
-    const result = await this._pool.query(query);
-    return new AddedComment({ ...result.rows[0] });
+    const { rows } = await this._pool.query(query);
+    return new AddedComment({ ...rows[0] });
   }
 
   async getCommentsWithRepliesByThreadId(threadId) {
@@ -131,8 +131,8 @@ ORDER BY c.replied_to NULLS FIRST, c.date ASC`,
       values: [id, content, threadId, owner, commentId, date, false],
     };
 
-    const result = await this._pool.query(query);
-    return new AddedComment({ ...result.rows[0] });
+    const { rows } = await this._pool.query(query);
+    return new AddedComment({ ...rows[0] });
   }
 
   async deleteReplyById(threadId, commentId, id) {
