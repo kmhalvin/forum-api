@@ -31,7 +31,7 @@
 
 This project was made to fulfill final assignment in Dicoding Back-End Developer Expert class, but is still useful as an example for any new project that will use the same software design and principles.
 
-To learn more about the application architecture, check out this awesome architecture exploration repository [https://github.com/jbuget/nodejs-clean-architecture-app](https://github.com/jbuget/nodejs-clean-architecture-app)
+To learn more about the application architecture, check out this awesome architecture exploration repository [https://github.com/jbuget/nodejs-clean-architecture-app](https://github.com/jbuget/nodejs-clean-architecture-app) and Dicoding Back-End Developer Expert class [https://www.dicoding.com/academies/276](https://www.dicoding.com/academies/276)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
