@@ -117,7 +117,7 @@ Project Link: [https://github.com/kmhalpin/forum-api](https://github.com/kmhalpi
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/kmhalvin
 [product-screenshot]: images/screenshot.png
-[ci-shield]: https://img.shields.io/github/workflow/status/kmhalpin/forum-api/Continuous%20Integration?label=Continuous%20Integration&logo=github&style=for-the-badge
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/kmhalpin/forum-api/ci.yml?label=Continuous%20Integration&logo=github&style=for-the-badge
 [ci-url]: https://github.com/kmhalpin/forum-api/actions/workflows/ci.yml
-[cd-shield]: https://img.shields.io/github/workflow/status/kmhalpin/forum-api/Continuous%20Deployment?label=Continuous%20Deployment&logo=github&style=for-the-badge
+[cd-shield]: https://img.shields.io/github/actions/workflow/status/kmhalpin/forum-api/cd.yml?label=Continuous%20Deployment&logo=github&style=for-the-badge
 [cd-url]: https://github.com/kmhalpin/forum-api/actions/workflows/cd.yml
