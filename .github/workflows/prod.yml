@@ -15,5 +15,6 @@ jobs:
       test_services: '["postgres"]'
       e2e_test_type: 'newman'
       postman_collection_path: '.github/postman/collections/Forum API V2 Test.json'
+      postman_environment_path: '.github/postman/environments/Forum API V2 Test.json'
       docker_image_name: 'forum-api'
       docker_image_tag: ${{ inputs.docker_image_tag }}
