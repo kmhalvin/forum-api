@@ -1,0 +1,19 @@
+on:
+  workflow_dispatch:
+    inputs:
+      docker_image_tag:
+        type: string
+        required: true
+jobs:
+  call_main_workflow:
+    uses: github.com/kmhalpin/workflows/.github/workflows/main.yml@main
+    with:
+      project_name: 'forum-api'
+      project_environment: 'production'
+      project_language: 'nodejs'
+      project_language_version: '14.x'
+      test_services: '["postgres"]'
+      e2e_test_type: 'newman'
+      postman_collection_path: '.github/postman/collections/Forum API V2 Test.json'
+      docker_image_name: 'forum-api'
+      docker_image_tag: ${{ inputs.docker_image_tag }}
