@@ -1,0 +1,4480 @@
+{
+	"info": {
+		"_postman_id": "7dde77fb-a235-4828-8471-94c090b90d3a",
+		"name": "Forum API V2 Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "29625752-7dde77fb-a235-4828-8471-94c090b90d3a"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Add User with Valid Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedUser).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedUser.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedUser.username).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedUser.fullname).to.be.a('string');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "3bd89f80-7d3c-4a5b-89ee-09583bfccd51"
+							}
+						}
+					],
+					"id": "c7464955-2660-4348-9385-c5d3e6bea6af",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{newUsername}}_{{$timestamp}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User with Bad Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 400 value', () => {\r",
+									"   pm.response.to.have.status(400);\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equals('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equals('');\r",
+									"    pm.expect(responseJson.message).to.not.equals(null);\r",
+									"});\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badAuthenticationPayloads = pm.environment.get('badAuthenticationPayloads');\r",
+									" \r",
+									"    if(badAuthenticationPayloads && badAuthenticationPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Add User with Bad Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();"
+								],
+								"type": "text/javascript",
+								"id": "651d06a9-dd08-478f-8e93-86ead51a5304"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badAuthenticationPayloads = pm.environment.get('badAuthenticationPayloads');\r",
+									"\r",
+									"if (!badAuthenticationPayloads || badAuthenticationPayloads.length === 0) {\r",
+									"    badAuthenticationPayloads = [\r",
+									"        {},\r",
+									"        { password: 'secret', fullname: 'Dicoding Indonesia' },\r",
+									"        { username: 123, password: 'secret', fullname: 'Dicoding Indonesia' },\r",
+									"        { username: 'dicoding', fullname: 'Dicoding Indonesia' },\r",
+									"        { username: 'dicoding', password: true, fullname: 'Dicoding Indonesia' },\r",
+									"        { username: 'dicoding', password: 'secret' },\r",
+									"        { username: 'dicoding', password: 'secret', fullname: [] },\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadAuthenticationPayload = badAuthenticationPayloads.shift();\r",
+									"pm.environment.set('currentBadAuthenticationPayload', JSON.stringify(currentBadAuthenticationPayload));\r",
+									"pm.environment.set('badAuthenticationPayloads', badAuthenticationPayloads);"
+								],
+								"type": "text/javascript",
+								"id": "d66ae108-9e84-440b-9f97-8f12ea1adeb8"
+							}
+						}
+					],
+					"id": "b05bba28-7e4c-4488-9068-abf121a95b63",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadAuthenticationPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User with Exist Username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.equal('username tidak tersedia');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "481529cc-882d-4c77-8ec9-9865485968e8"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const host = pm.environment.get('host');\r",
+									"const port = pm.environment.get('port');\r",
+									"const protocol = pm.environment.get('protocol');\r",
+									"\r",
+									"const postRequest = {\r",
+									"    url: `${protocol}://${host}:${port}/users`,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: pm.environment.get('newUsername'),\r",
+									"            password: pm.environment.get('newPassword'),\r",
+									"            fullname: pm.environment.get('newFullname')\r",
+									"        }),\r",
+									"    },\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    console.log(error ? error : response.json());\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "6043cb83-0a94-4deb-ad3e-6ce9ffcb0d83"
+							}
+						}
+					],
+					"id": "95d25f80-307a-4f4c-aba3-1cc81716a139",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User with Exist Username Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.equal('tidak dapat membuat user baru karena username mengandung karakter terlarang');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "d109c498-0f58-48ba-9860-f9a1fca5dcc9"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "ba95a030-924f-435b-803e-2a080816c5fb"
+							}
+						}
+					],
+					"id": "df764dc1-05cd-4227-b490-6a86759d9c84",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"dico ding\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/users",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "1f66b327-8153-4fe5-9bb4-5ca7b5855b87"
+		},
+		{
+			"name": "Authentications",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Add User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "29494659-0873-4530-a8dd-c935f183eead"
+									}
+								}
+							],
+							"id": "38cc59b9-7b9e-42be-b767-19b3e55b41cf",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "95ffff5f-c66d-4753-ba5e-296915b4d162"
+				},
+				{
+					"name": "Login with Invalid Password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const host = pm.environment.get('host');\r",
+									"const port = pm.environment.get('port');\r",
+									"const protocol = pm.environment.get('protocol');\r",
+									"\r",
+									"const postRequest = {\r",
+									"    url: `${protocol}://${host}:${port}/users`,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: pm.environment.get('newUsername'),\r",
+									"            password: pm.environment.get('newPassword'),\r",
+									"            fullname: pm.environment.get('newFullname')\r",
+									"        }),\r",
+									"    },\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    console.log(error ? error : response.json());\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "626bb7cd-96d1-434c-a1c2-a2a3301cc653"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should respose with correct property and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.an('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "bf86f129-10fe-4e25-9ceb-9fd752a2b4b2"
+							}
+						}
+					],
+					"id": "94ea553a-d47a-422e-8f07-c6d0d4cf4a41",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"xxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with Invalid Username",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const host = pm.environment.get('host');\r",
+									"const port = pm.environment.get('port');\r",
+									"const protocol = pm.environment.get('protocol');\r",
+									"\r",
+									"const postRequest = {\r",
+									"    url: `${protocol}://${host}:${port}/users`,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: pm.environment.get('newUsername'),\r",
+									"            password: pm.environment.get('newPassword'),\r",
+									"            fullname: pm.environment.get('newFullname')\r",
+									"        }),\r",
+									"    },\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    console.log(error ? error : response.json());\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "9fa3bdff-e12c-4e20-b5f4-5548d68eac72"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should respose with correct property and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.an('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "d2fbf053-381b-45dc-b2fd-ce3cfa5b8f11"
+							}
+						}
+					],
+					"id": "6ea57b71-6a2f-4ffc-b809-c2d8524b8894",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"xxxx\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with Valid Credential",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const host = pm.environment.get('host');\r",
+									"const port = pm.environment.get('port');\r",
+									"const protocol = pm.environment.get('protocol');\r",
+									"\r",
+									"const postRequest = {\r",
+									"    url: `${protocol}://${host}:${port}/users`,\r",
+									"    method: 'POST',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: pm.environment.get('newUsername'),\r",
+									"            password: pm.environment.get('newPassword'),\r",
+									"            fullname: pm.environment.get('newFullname')\r",
+									"        }),\r",
+									"    },\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(postRequest, (error, response) => {\r",
+									"    console.log(error ? error : response.json());\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "42cbf76d-8af9-41b2-af6e-77011755201c"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should respose with correct property and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.accessToken).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.refreshToken).to.be.a('string');\r",
+									"\r",
+									"    pm.environment.set('accessToken', responseJson.data.accessToken);\r",
+									"    pm.environment.set('refreshToken', responseJson.data.refreshToken);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "63a26e7a-937a-4cc2-8a05-96fbcafb55bc"
+							}
+						}
+					],
+					"id": "f1dc483c-12f5-43d9-b40d-718d4acb2cc9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token with Valid Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with corrent message and property', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.accessToken).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.accessToken).to.not.equals('');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "7daae8af-b53f-4d18-b42e-4f7443958193"
+							}
+						}
+					],
+					"id": "bccd6b98-1378-4556-b59f-4766928e11ae",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token with invalid Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with corrent message and property', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.equal('refresh token tidak valid');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "c2c07493-f1be-4fe4-8926-be0170146260"
+							}
+						}
+					],
+					"id": "4c65ed1d-b5c1-4c27-9a08-ff0a5d5f92e3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"xxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout with Valid Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain status with success value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});\r",
+									"\r",
+									"pm.test('when refreshing access token with the deleted refresh token', () => {\r",
+									"    const host = pm.environment.get('host');\r",
+									"    const port = pm.environment.get('port');\r",
+									"    const protocol = pm.environment.get('protocol');\r",
+									"    const refreshToken = pm.environment.get('refreshToken');\r",
+									"\r",
+									"    const putRequest = {\r",
+									"        url: `${protocol}://${host}:${port}/authentications`,\r",
+									"        method: 'PUT',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: 'raw',\r",
+									"            raw: JSON.stringify({ refreshToken }),\r",
+									"        },\r",
+									"    };\r",
+									"\r",
+									"    pm.sendRequest(putRequest, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('the response code should be 400', () => {\r",
+									"                pm.expect(response.code).to.equals(400);\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "af9fba4d-d6f2-4e2b-9d5f-fa7259fdaa71"
+							}
+						}
+					],
+					"id": "b415b7e6-29f1-4f38-913e-3e0e29cbbc28",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout with Invalid Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should contain correct status and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.equal('refresh token tidak ditemukan di database');\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "cf64a576-8a73-458e-b649-29795f55d562"
+							}
+						}
+					],
+					"id": "a05794fb-acd0-441e-8ca2-81831c63dd22",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"xxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "1c924fe3-1b3a-440f-b8b0-5f3eff699a22"
+		},
+		{
+			"name": "Threads",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "[No Test] Add User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "577a9bf8-7291-4e46-9c7d-d256b8106add"
+									}
+								}
+							],
+							"id": "023de2f3-5c91-46ba-b964-3255224f04d5",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "cce67e51-4c29-43de-b437-e7010d513d45"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "99443789-a48f-446e-93a1-e704a566e435"
+									}
+								}
+							],
+							"id": "7806e92e-2c57-47b2-873f-1b69560b2d87",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "5f285e7d-48ce-4aff-bb7d-1931d34d6d85"
+				},
+				{
+					"name": "Add Thread with No Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.message).to.equal('Missing authentication');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "f5b04e4f-7a63-46f1-b1f4-7f50a8afcedc"
+							}
+						}
+					],
+					"id": "e44b567e-7cd9-467c-a4ef-05072ea660cf",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Thread with Bad Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badThreadPayloads = pm.environment.get('badThreadPayloads');\r",
+									"\r",
+									"if (!badThreadPayloads || badThreadPayloads.length === 0) {\r",
+									"    badThreadPayloads = [\r",
+									"        {},\r",
+									"        { body: 'A Body' },\r",
+									"        { title: 123, body: 'A Body' },\r",
+									"        { title: 'A Thread' },\r",
+									"        { title: 'A Thread', body: true },\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadThreadPayload = badThreadPayloads.shift();\r",
+									"pm.environment.set('currentBadThreadPayload', JSON.stringify(currentBadThreadPayload));\r",
+									"pm.environment.set('badThreadPayloads', badThreadPayloads);"
+								],
+								"type": "text/javascript",
+								"id": "42c129c1-1369-43d3-83b1-0cd256320152"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show fail status and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badThreadPayloads = pm.environment.get('badThreadPayloads');\r",
+									" \r",
+									"    if(badThreadPayloads && badThreadPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Add Thread with Bad Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();"
+								],
+								"type": "text/javascript",
+								"id": "bdfe0082-8bb9-487f-b2cc-b461db56a338"
+							}
+						}
+					],
+					"id": "f0ee8d7c-43be-4a35-b8b6-a9ef036bb894",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadThreadPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Thread with Valid Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with valid property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedThread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedThread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedThread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.addedThread.title).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedThread.title).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.addedThread.owner).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedThread.owner).to.not.equal('');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "dabcaade-95d2-446f-a2d8-f53ada605560"
+							}
+						}
+					],
+					"id": "350732a5-7765-443a-acc5-6daf03592614",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"{{newThreadTitle}}\",\r\n    \"body\": \"{{newThreadBody}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "5dcc1606-f34f-47b4-831a-25f2ae3150fa"
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "[No Test] Add User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "f7621a41-6430-444b-b032-5c8cadbb522c"
+									}
+								}
+							],
+							"id": "8557e98d-6d43-4ab0-abed-84e41172d01f",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add User Johndoe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "ce5ff1dc-2e19-4f02-ae1e-dea84155bee5"
+									}
+								}
+							],
+							"id": "9e92eb1b-5164-417c-ab12-beb440ee0326",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername2}}\",\r\n    \"password\": \"{{newPassword2}}\",\r\n    \"fullname\": \"{{newFullname2}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login User Dicoding",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "de6037df-858c-4edf-b87e-abe3d099d3d7"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "2762b8cc-be91-404f-86ec-03a0cb3ed31e"
+									}
+								}
+							],
+							"id": "e80417e7-1d00-4e4c-bcb5-789c30da7087",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login User Johndoe",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "0392867e-2867-4bec-9d6e-bedf91b4d299"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken2', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken2', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "8356bb71-f546-4135-985b-b2c305eecc8c"
+									}
+								}
+							],
+							"id": "e7cf6ebb-9393-4913-bacb-6488a258c8b8",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername2}}\",\r\n    \"password\": \"{{newPassword2}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add Thread with User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('threadId', responseJson.data.addedThread.id);"
+										],
+										"type": "text/javascript",
+										"id": "72e11468-cac9-4f1f-90df-748683b3c2de"
+									}
+								}
+							],
+							"id": "e23454f8-be12-4089-a2d2-3759bf711a64",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"{{newThreadTitle}}\",\r\n    \"body\": \"{{newThreadBody}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/threads",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"threads"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "be14c2c3-55cb-4e4f-bbe0-c1fce99d0e58"
+				},
+				{
+					"name": "Add Comment with No Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.message).to.equal('Missing authentication');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "68eb8f33-1226-4985-ad07-1cca92903d87"
+							}
+						}
+					],
+					"id": "6b6b98ff-953d-416e-81af-c255fd61e239",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment with Not Found Thread",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response should have 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "6105cb25-c3c2-4f38-ad3a-17678e10a420"
+							}
+						}
+					],
+					"id": "9ef18c74-3bc5-4481-92b3-24edcfc18c23",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/xxx/comments",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"xxx",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment with Invalid Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response should have 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badAddCommentPayloads = pm.environment.get('badAddCommentPayloads');\r",
+									" \r",
+									"    if(badAddCommentPayloads && badAddCommentPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Add Comment with Invalid Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "343eb606-6ef9-4912-9087-6082b3dc6050"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badAddCommentPayloads = pm.environment.get('badAddCommentPayloads');\r",
+									"\r",
+									"if (!badAddCommentPayloads || badAddCommentPayloads.length === 0) {\r",
+									"    badAddCommentPayloads = [\r",
+									"        {},\r",
+									"        { content: 123 },\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadAddCommentPayload = badAddCommentPayloads.shift();\r",
+									"pm.environment.set('currentBadAddCommentPayload', JSON.stringify(currentBadAddCommentPayload));\r",
+									"pm.environment.set('badAddCommentPayloads', badAddCommentPayloads);"
+								],
+								"type": "text/javascript",
+								"id": "491cea43-20f4-46be-af7a-ad655491662d"
+							}
+						}
+					],
+					"id": "db4a0cc2-a780-4aaa-8fbb-bc893d3e8300",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadAddCommentPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment with User Johndoe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response should have 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should have correct property and value', () => {\r",
+									"    const content = pm.environment.get('newCommentContent');\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedComment).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedComment.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedComment.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.addedComment.content).to.equal(content);\r",
+									"    pm.expect(responseJson.data.addedComment.owner).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedComment.owner).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "42186435-3fe2-4456-bf4c-454906791c1a"
+							}
+						}
+					],
+					"id": "f145177f-1605-4be7-ba60-de5722febe85",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment with User Dicoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response should have 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should have correct property and value', () => {\r",
+									"    const content = pm.environment.get('newCommentContent');\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedComment).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedComment.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedComment.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.addedComment.content).to.equal(content);\r",
+									"    pm.expect(responseJson.data.addedComment.owner).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedComment.owner).to.not.equal('');\r",
+									"\r",
+									"    pm.environment.set('commentId', responseJson.data.addedComment.id);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "da0cf0c2-50c3-405e-8ff5-48d2c1ad6971"
+							}
+						}
+					],
+					"id": "b81e6c32-2d92-4c87-96e5-019144d31d94",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Commented Thread",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with status code 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.title).to.equal(pm.environment.get('newThreadTitle'));\r",
+									"    pm.expect(responseJson.data.thread.body).to.equal(pm.environment.get('newThreadBody'));\r",
+									"    pm.expect(responseJson.data.thread.date).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.data).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(responseJson.data.thread.comments).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.thread.comments).to.have.length(2);\r",
+									"    \r",
+									"    const [comment1, comment2] = responseJson.data.thread.comments;\r",
+									"\r",
+									"    pm.expect(comment1).to.be.an('object');\r",
+									"    pm.expect(comment1.id).to.be.a('string');\r",
+									"    pm.expect(comment1.username).to.equal(pm.environment.get('newUsername2'));\r",
+									"    pm.expect(comment1.date).to.be.a('string');\r",
+									"    pm.expect(comment1.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"\r",
+									"    pm.expect(comment2).to.be.an('object');\r",
+									"    pm.expect(comment2.id).to.be.a('string');\r",
+									"    pm.expect(comment2.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(comment2.date).to.be.a('string');\r",
+									"    pm.expect(comment2.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "06b38d0b-30e5-4af9-8ec2-2593405d6058"
+							}
+						}
+					],
+					"id": "3b87cd78-b42a-4293-bde8-5d7b199b0afa",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Dicoding Comment with No Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.message).to.equal('Missing authentication');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "77f8d31f-8740-4a47-8909-0c3403064038"
+							}
+						}
+					],
+					"id": "f1d769d8-383a-45b7-9849-5cb8433d2230",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Not Found Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "353c1388-9e24-408f-bfc3-4bee6df03849"
+							}
+						}
+					],
+					"id": "5113a3f1-3194-44ee-aede-a29153bd5370",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/xxx",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"xxx"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Dicoding Comment with Using Johndoe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 403 status code', () => {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "35af4f14-26ca-41a8-a72e-c0e803e664e4"
+							}
+						}
+					],
+					"id": "cbef72e5-07b3-4c31-8f5c-191d7bef732f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Dicoding Comment with Using Dicoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "e7aa2a23-5972-4c41-8942-cd52bad25275"
+							}
+						}
+					],
+					"id": "ef757d54-cfa5-4be2-8de4-2e8de922f386",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Thread After Dicoding Comment Deleted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with status code 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.title).to.equal(pm.environment.get('newThreadTitle'));\r",
+									"    pm.expect(responseJson.data.thread.body).to.equal(pm.environment.get('newThreadBody'));\r",
+									"    pm.expect(responseJson.data.thread.date).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.data).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(responseJson.data.thread.comments).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.thread.comments).to.have.length(2);\r",
+									"    \r",
+									"    const [comment1, comment2] = responseJson.data.thread.comments;\r",
+									"\r",
+									"    pm.expect(comment1).to.be.an('object');\r",
+									"    pm.expect(comment1.id).to.be.a('string');\r",
+									"    pm.expect(comment1.username).to.equal(pm.environment.get('newUsername2'));\r",
+									"    pm.expect(comment1.date).to.be.a('string');\r",
+									"    pm.expect(comment1.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"\r",
+									"    pm.expect(comment2).to.be.an('object');\r",
+									"    pm.expect(comment2.id).to.be.a('string');\r",
+									"    pm.expect(comment2.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(comment2.date).to.be.a('string');\r",
+									"    pm.expect(comment2.content).to.equal('**komentar telah dihapus**');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "90d335ec-5c3f-494c-942e-fafc12c12732"
+							}
+						}
+					],
+					"id": "eafcd495-8f5c-4862-b4b6-55d15631329c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "3db4e47d-b1de-4337-8a70-c56d7316f190"
+		},
+		{
+			"name": "[Optional] Replies",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "[No Test] Add User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "21092b93-64ea-442e-8e85-391121edc0ce"
+									}
+								}
+							],
+							"id": "cf677da5-2149-47c9-97c6-e241cff3568b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add User Johndoe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "04845574-ca13-41c0-8045-e5a3539c4227"
+									}
+								}
+							],
+							"id": "a8c982ff-584d-457b-bc75-ac129144e946",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername2}}\",\r\n    \"password\": \"{{newPassword2}}\",\r\n    \"fullname\": \"{{newFullname2}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login User Dicoding",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "1a2d25b3-f7b5-448e-b49b-2a8228801cce"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "5de22be0-b185-4127-ae91-0a8e7cf10749"
+									}
+								}
+							],
+							"id": "825617c0-d50a-4feb-861b-ed77e062c066",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login User Johndoe",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "6ca5372a-7295-46e5-9010-a4234cc566da"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken2', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken2', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "01a33817-60ce-4476-ba43-ee3e5bddb0c6"
+									}
+								}
+							],
+							"id": "d2e820b1-180e-4788-9643-48955ec1f9c6",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername2}}\",\r\n    \"password\": \"{{newPassword2}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add Thread with User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('threadId', responseJson.data.addedThread.id);"
+										],
+										"type": "text/javascript",
+										"id": "6f652c9d-eeec-46b2-9be6-f978516c39a1"
+									}
+								}
+							],
+							"id": "b2e1d1df-af1c-4507-a51e-34f12498d5d5",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"{{newThreadTitle}}\",\r\n    \"body\": \"{{newThreadBody}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/threads",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"threads"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add Comment with User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('commentId', responseJson.data.addedComment.id);"
+										],
+										"type": "text/javascript",
+										"id": "bc9c8dbe-61b4-439f-8dd7-62505f84adad"
+									}
+								}
+							],
+							"id": "202e286f-320e-4519-83f0-684ab30ffd64",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"threads",
+										"{{threadId}}",
+										"comments"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "217cbde0-66ac-4c83-a9bd-501e7ef18869"
+				},
+				{
+					"name": "[Optional] Add Reply to Dicoding Comment with No Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.message).to.equal('Missing authentication');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "22da8820-d76c-4ea7-99f8-b433692e381f"
+							}
+						}
+					],
+					"id": "acce153c-b99b-48d3-8395-82c53a8bd560",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newReplyContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Add Reply to Dicoding Comment with Invalid Thread",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('should fail status and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "155e437d-127d-4b70-8e98-2ecac70622bb"
+							}
+						}
+					],
+					"id": "9c0ed718-a909-4b7f-996b-c084011342e4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newReplyContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/xxxx/comments/{{commentId}}/replies",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"xxxx",
+								"comments",
+								"{{commentId}}",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Add Reply to Invalid Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('should fail status and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "8e32d6e9-7a7d-4bf4-b0a3-bbec00c35c3b"
+							}
+						}
+					],
+					"id": "064a69f0-f4bb-45fd-b6d7-3dcea5c5e9d3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newReplyContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/xxx/replies",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"xxx",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Add Reply to Dicoding Comment with Bad Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response should have 400 status code', () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badAddReplyPayloads = pm.environment.get('badAddReplyPayloads');\r",
+									" \r",
+									"    if(badAddReplyPayloads && badAddReplyPayloads.length > 0) {\r",
+									"        postman.setNextRequest('[Optional] Add Reply to Dicoding Comment with Bad Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "8dd932a9-d3a1-4b90-a3a4-3f8952b9d67d"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badAddReplyPayloads = pm.environment.get('badAddReplyPayloads');\r",
+									"\r",
+									"if (!badAddReplyPayloads || badAddReplyPayloads.length === 0) {\r",
+									"    badAddReplyPayloads = [\r",
+									"        {},\r",
+									"        { content: 123 },\r",
+									"    ]\r",
+									"}\r",
+									"\r",
+									"const currentBadAddReplyPayload = badAddReplyPayloads.shift();\r",
+									"pm.environment.set('currentBadAddReplyPayload', JSON.stringify(currentBadAddReplyPayload));\r",
+									"pm.environment.set('badAddReplyPayloads', badAddReplyPayloads);\r",
+									""
+								],
+								"type": "text/javascript",
+								"id": "a6a2f96c-9735-4bc4-bdde-792c83e3c28f"
+							}
+						}
+					],
+					"id": "3c21e3f3-03f6-4785-ac46-f98a5c0301c2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadAddReplyPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Add Reply to Dicoding Comment using Johndoe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedReply).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedReply.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedReply.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.addedReply.content).to.equal(pm.environment.get('newReplyContent'));\r",
+									"    pm.expect(responseJson.data.addedReply.owner).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedReply.owner).to.not.equal('');\r",
+									"\r",
+									"    pm.environment.set('replyId', responseJson.data.addedReply.id);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "b97f83de-ef2b-449b-ba0d-d2860310941b"
+							}
+						}
+					],
+					"id": "6d0ae7e6-8da0-4f3c-9aa8-a687f44e1e41",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newReplyContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Add Reply to Dicoding Comment using Dicoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedReply).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.addedReply.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedReply.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.addedReply.content).to.equal(pm.environment.get('newReplyContent'));\r",
+									"    pm.expect(responseJson.data.addedReply.owner).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.addedReply.owner).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "3f07f97c-dbd9-48ee-9add-986ce292512c"
+							}
+						}
+					],
+					"id": "99f69dba-0652-4d8d-9ad6-e4c9ed079c17",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"{{newReplyContent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Get Replied Thread",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with status code 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.title).to.equal(pm.environment.get('newThreadTitle'));\r",
+									"    pm.expect(responseJson.data.thread.body).to.equal(pm.environment.get('newThreadBody'));\r",
+									"    pm.expect(responseJson.data.thread.date).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.data).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(responseJson.data.thread.comments).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.thread.comments).to.have.length(1);\r",
+									"    \r",
+									"    const [comment] = responseJson.data.thread.comments;\r",
+									"\r",
+									"    pm.expect(comment).to.be.an('object');\r",
+									"    pm.expect(comment.id).to.be.a('string');\r",
+									"    pm.expect(comment.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(comment.date).to.be.a('string');\r",
+									"    pm.expect(comment.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"    pm.expect(comment.replies).to.be.an('array');\r",
+									"    pm.expect(comment.replies).to.have.length(2);\r",
+									"\r",
+									"    const [reply1, reply2] = comment.replies;\r",
+									"\r",
+									"    pm.expect(reply1).to.be.an('object');\r",
+									"    pm.expect(reply1.id).to.be.a('string');\r",
+									"    pm.expect(reply1.id).to.not.equal('');\r",
+									"    pm.expect(reply1.content).to.equal(pm.environment.get('newReplyContent'));\r",
+									"    pm.expect(reply1.date).to.be.a('string');\r",
+									"    pm.expect(reply1.date).to.not.equal('');\r",
+									"    pm.expect(reply1.username).to.equal(pm.environment.get('newUsername2'));\r",
+									"\r",
+									"    pm.expect(reply2).to.be.an('object');\r",
+									"    pm.expect(reply2.id).to.be.a('string');\r",
+									"    pm.expect(reply2.id).to.not.equal('');\r",
+									"    pm.expect(reply2.content).to.equal(pm.environment.get('newReplyContent'));\r",
+									"    pm.expect(reply2.date).to.be.a('string');\r",
+									"    pm.expect(reply2.date).to.not.equal('');\r",
+									"    pm.expect(reply2.username).to.equal(pm.environment.get('newUsername'));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "675ad9df-1211-4340-b080-b08b0bf11e87"
+							}
+						}
+					],
+					"id": "0a407c71-c179-472c-9625-feb94c3c1a2f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Delete Not Found Reply",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "ad9a9b03-653f-44e1-8fc3-a2597a5b8a0f"
+							}
+						}
+					],
+					"id": "2efdd2ef-71db-43ce-9ec5-b2af72b707e1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies/xxx",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies",
+								"xxx"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Delete Johndoe Reply using Dicoding",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 403 status code', () => {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "40bbc768-5a8c-469f-b572-5e30adccbb49"
+							}
+						}
+					],
+					"id": "73c9a133-9f35-45b4-8a9e-38b9f5c59e50",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies/{{replyId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies",
+								"{{replyId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Delete Johndoe Reply using Johndoe",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "c0d69190-208f-413c-a35d-a9c7d825552f"
+							}
+						}
+					],
+					"id": "407e8c2b-5a13-4cbc-af2e-55c5b6daf808",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/replies/{{replyId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"replies",
+								"{{replyId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Get Replied Thread After Johndoe Reply Deleted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with status code 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.title).to.equal(pm.environment.get('newThreadTitle'));\r",
+									"    pm.expect(responseJson.data.thread.body).to.equal(pm.environment.get('newThreadBody'));\r",
+									"    pm.expect(responseJson.data.thread.date).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.data).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(responseJson.data.thread.comments).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.thread.comments).to.have.length(1);\r",
+									"    \r",
+									"    const [comment] = responseJson.data.thread.comments;\r",
+									"\r",
+									"    pm.expect(comment).to.be.an('object');\r",
+									"    pm.expect(comment.id).to.be.a('string');\r",
+									"    pm.expect(comment.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(comment.date).to.be.a('string');\r",
+									"    pm.expect(comment.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"    pm.expect(comment.replies).to.be.an('array');\r",
+									"    pm.expect(comment.replies).to.have.length(2);\r",
+									"\r",
+									"    const [reply1, reply2] = comment.replies;\r",
+									"\r",
+									"    pm.expect(reply1).to.be.an('object');\r",
+									"    pm.expect(reply1.id).to.be.a('string');\r",
+									"    pm.expect(reply1.id).to.not.equal('');\r",
+									"    pm.expect(reply1.content).to.equal('**balasan telah dihapus**');\r",
+									"    pm.expect(reply1.date).to.be.a('string');\r",
+									"    pm.expect(reply1.date).to.not.equal('');\r",
+									"    pm.expect(reply1.username).to.equal(pm.environment.get('newUsername2'));\r",
+									"\r",
+									"    pm.expect(reply2).to.be.an('object');\r",
+									"    pm.expect(reply2.id).to.be.a('string');\r",
+									"    pm.expect(reply2.id).to.not.equal('');\r",
+									"    pm.expect(reply2.content).to.equal(pm.environment.get('newReplyContent'));\r",
+									"    pm.expect(reply2.date).to.be.a('string');\r",
+									"    pm.expect(reply2.date).to.not.equal('');\r",
+									"    pm.expect(reply2.username).to.equal(pm.environment.get('newUsername'));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "bd355c68-5f75-496c-afd5-558c44b0ef59"
+							}
+						}
+					],
+					"id": "199917f1-63d7-4bfe-8a28-ed206ad9bef4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "531839d0-c24e-4fad-aa4e-8c6ee670c475"
+		},
+		{
+			"name": "[Optional] Likes",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "[No Test] Add User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "09d86aa5-7a6b-4eb6-a0d7-3cfb00e968a3"
+									}
+								}
+							],
+							"id": "03619ad2-decd-4ee1-8609-a048e61d8b00",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add User Johndoe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"id": "069e2514-c2bc-47ce-bd47-04116d90c391"
+									}
+								}
+							],
+							"id": "c1cc8d4c-27a6-4066-9394-6cc4d250ac0a",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername2}}\",\r\n    \"password\": \"{{newPassword2}}\",\r\n    \"fullname\": \"{{newFullname2}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/users",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login User Dicoding",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "317f2801-f07e-4c09-a027-3ed3a601e955"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "369b138e-7208-41b6-9e39-a5f8ea718a8b"
+									}
+								}
+							],
+							"id": "2c27c30f-3d6f-4533-8ab5-00b5d65fa6b0",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Login User Johndoe",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const host = pm.environment.get('host');\r",
+											"const port = pm.environment.get('port');\r",
+											"const protocol = pm.environment.get('protocol');\r",
+											"\r",
+											"const postRequest = {\r",
+											"    url: `${protocol}://${host}:${port}/users`,\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json',\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            username: pm.environment.get('newUsername'),\r",
+											"            password: pm.environment.get('newPassword'),\r",
+											"            fullname: pm.environment.get('newFullname')\r",
+											"        }),\r",
+											"    },\r",
+											"};\r",
+											"\r",
+											"pm.sendRequest(postRequest, (error, response) => {\r",
+											"    console.log(error ? error : response.json());\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"id": "c98d2043-82b8-453f-81ad-e0bb8e9137d4"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('accessToken2', responseJson.data.accessToken);\r",
+											"pm.environment.set('refreshToken2', responseJson.data.refreshToken);"
+										],
+										"type": "text/javascript",
+										"id": "1c3601fc-8e9f-417c-90f6-c0d9a153af2c"
+									}
+								}
+							],
+							"id": "dea28136-eb3d-4a6b-9f6e-7f6266582c08",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{newUsername2}}\",\r\n    \"password\": \"{{newPassword2}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/authentications",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add Thread with User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('threadId', responseJson.data.addedThread.id);"
+										],
+										"type": "text/javascript",
+										"id": "7e47d219-4087-4da1-8ee8-66f99c38319b"
+									}
+								}
+							],
+							"id": "0b4f6fc9-50f2-4f1f-862f-ce61fda4aaa8",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"{{newThreadTitle}}\",\r\n    \"body\": \"{{newThreadBody}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/threads",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"threads"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add Comment with User Dicoding",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('commentId', responseJson.data.addedComment.id);"
+										],
+										"type": "text/javascript",
+										"id": "d04e94b0-1991-4036-bc57-5f20cd6fc0a3"
+									}
+								}
+							],
+							"id": "46e6be9e-3a12-4e99-8da8-5aa1cb470e1d",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"threads",
+										"{{threadId}}",
+										"comments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "[No Test] Add Comment with User Johndoe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"\r",
+											"pm.environment.set('commentId2', responseJson.data.addedComment.id);"
+										],
+										"type": "text/javascript",
+										"id": "e297716c-f983-43e2-a3b2-f0b77f80c66d"
+									}
+								}
+							],
+							"id": "3d6ce98d-db47-4673-ab2e-421a567b83de",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken2}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"{{newCommentContent}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"threads",
+										"{{threadId}}",
+										"comments"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "84ee2043-265b-4976-9270-47ee9eff1a21"
+				},
+				{
+					"name": "[Optional] Like without Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 401 status code', () => {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test('should show Missing Authentication message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.message).to.equal('Missing authentication');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "da73d7fc-4e20-40c5-8e10-e63b9f44ef65"
+							}
+						}
+					],
+					"id": "eca98f74-a642-4ecd-9c21-8692f8681e7a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Like with Invalid Thread",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('should fail status and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "723b8119-c204-4769-bc47-968af3e92a2e"
+							}
+						}
+					],
+					"id": "0bf9b566-66e0-414a-abd3-c14e1e8c6061",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/xxxx/comments/{{commentId}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"xxxx",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Like with Invalid Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 404 status code', () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('should fail status and message', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equal('');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"id": "d49a654d-bdb9-40d4-972c-704f776eac91"
+							}
+						}
+					],
+					"id": "212074c1-860b-4f31-ac89-5af1fb2bc61e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/xxx/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"xxx",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Johndoe Likes Dicoding's Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "efe5b35c-456c-4e6a-9c26-87ebc568bf52"
+							}
+						}
+					],
+					"id": "f50acc2f-31d3-4d72-882c-b1bd2db95b10",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Dicoding Likes His Own Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "8e9da642-13fb-4766-affe-4ef3ac11f439"
+							}
+						}
+					],
+					"id": "4a19c7c2-8c24-4377-92d2-f20b1e50e208",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Dicoding Likes Johndoe's Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "f818195a-1919-4fd1-8ba6-e793a23a565a"
+							}
+						}
+					],
+					"id": "c8f1803a-b462-441c-965f-47b68b966c2c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId2}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId2}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Johndoe Likes His Own Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "c17a8532-6b9e-44dd-b832-910e51fdce49"
+							}
+						}
+					],
+					"id": "871fc01b-0c21-4dfa-8d7d-577059c6233c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken2}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId2}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId2}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Get Liked Comments Thread",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with status code 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.title).to.equal(pm.environment.get('newThreadTitle'));\r",
+									"    pm.expect(responseJson.data.thread.body).to.equal(pm.environment.get('newThreadBody'));\r",
+									"    pm.expect(responseJson.data.thread.date).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.data).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(responseJson.data.thread.comments).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.thread.comments).to.have.length(2);\r",
+									"\r",
+									"    const [comment1, comment2] = responseJson.data.thread.comments;\r",
+									"\r",
+									"    pm.expect(comment1.id).to.be.a('string');\r",
+									"    pm.expect(comment1.id).to.not.equal('');\r",
+									"    pm.expect(comment1.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(comment1.date).to.be.a('string');\r",
+									"    pm.expect(comment1.date).to.not.equal('');\r",
+									"    pm.expect(comment1.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"    pm.expect(comment1.likeCount).to.equal(2);\r",
+									"\r",
+									"    pm.expect(comment2.id).to.be.a('string');\r",
+									"    pm.expect(comment2.id).to.not.equal('');\r",
+									"    pm.expect(comment2.username).to.equal(pm.environment.get('newUsername2'));\r",
+									"    pm.expect(comment2.date).to.be.a('string');\r",
+									"    pm.expect(comment2.date).to.not.equal('');\r",
+									"    pm.expect(comment2.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"    pm.expect(comment2.likeCount).to.equal(2);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "e9b1a5aa-5bbf-4f23-8a5f-986adc9cc103"
+							}
+						}
+					],
+					"id": "44b5502d-1064-4d9b-bb6f-4fdd15eb143b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Dicoding Unlike Johndoe's Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "b22e0133-610c-4f5e-bb63-84967d5f16c0"
+							}
+						}
+					],
+					"id": "fb2639b4-c2ae-4536-b698-0b34573cb1f1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}/comments/{{commentId2}}/likes",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}",
+								"comments",
+								"{{commentId2}}",
+								"likes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Optional] Get Thread after Dicoding Unlike a Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response with status code 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should contain correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.thread.id).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.id).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.title).to.equal(pm.environment.get('newThreadTitle'));\r",
+									"    pm.expect(responseJson.data.thread.body).to.equal(pm.environment.get('newThreadBody'));\r",
+									"    pm.expect(responseJson.data.thread.date).to.be.a('string');\r",
+									"    pm.expect(responseJson.data.thread.data).to.not.equal('');\r",
+									"    pm.expect(responseJson.data.thread.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(responseJson.data.thread.comments).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.thread.comments).to.have.length(2);\r",
+									"\r",
+									"    const [comment1, comment2] = responseJson.data.thread.comments;\r",
+									"\r",
+									"    pm.expect(comment1.id).to.be.a('string');\r",
+									"    pm.expect(comment1.id).to.not.equal('');\r",
+									"    pm.expect(comment1.username).to.equal(pm.environment.get('newUsername'));\r",
+									"    pm.expect(comment1.date).to.be.a('string');\r",
+									"    pm.expect(comment1.date).to.not.equal('');\r",
+									"    pm.expect(comment1.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"    pm.expect(comment1.likeCount).to.equal(2);\r",
+									"\r",
+									"    pm.expect(comment2.id).to.be.a('string');\r",
+									"    pm.expect(comment2.id).to.not.equal('');\r",
+									"    pm.expect(comment2.username).to.equal(pm.environment.get('newUsername2'));\r",
+									"    pm.expect(comment2.date).to.be.a('string');\r",
+									"    pm.expect(comment2.date).to.not.equal('');\r",
+									"    pm.expect(comment2.content).to.equal(pm.environment.get('newCommentContent'));\r",
+									"    pm.expect(comment2.likeCount).to.equal(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"id": "7f0f9367-25f2-4da7-a0cb-ea7120175df2"
+							}
+						}
+					],
+					"id": "dfefed3e-d454-4031-8b88-f26f1318a6c9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/threads/{{threadId}}",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"threads",
+								"{{threadId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "012bbe8f-1580-4d7d-863c-29904382d222"
+		}
+	]
+}
