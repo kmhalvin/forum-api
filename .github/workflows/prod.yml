@@ -6,7 +6,7 @@ on:
         required: true
 jobs:
   call_main_workflow:
-    uses: github.com/kmhalpin/workflows/.github/workflows/main.yml@main
+    uses: kmhalpin/workflows/.github/workflows/main.yml@main
     with:
       project_name: 'forum-api'
       project_environment: 'production'
