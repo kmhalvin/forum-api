@@ -1,0 +1,76 @@
+{
+    "family": "forum-api-task",
+    "containerDefinitions": [
+        {
+            "name": "forum-api",
+            "image": "index.docker.io/kmhalpin/forum-api:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "forum-api-5000-tcp",
+                    "containerPort": 5000,
+                    "hostPort": 5000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "ACCESS_TOKEN_AGE",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:ACCESS_TOKEN_AGE::"
+                },
+                {
+                    "name": "ACCESS_TOKEN_KEY",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:ACCESS_TOKEN_KEY::"
+                },
+                {
+                    "name": "HOST",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:HOST::"
+                },
+                {
+                    "name": "PGDATABASE",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:PGDATABASE::"
+                },
+                {
+                    "name": "PGHOST",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:PGHOST::"
+                },
+                {
+                    "name": "PGPASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:PGPASSWORD::"
+                },
+                {
+                    "name": "PGPORT",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:PGPORT::"
+                },
+                {
+                    "name": "PGUSER",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:PGUSER::"
+                },
+                {
+                    "name": "PORT",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:PORT::"
+                },
+                {
+                    "name": "REFRESH_TOKEN_KEY",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:024538648017:secret:prod/forum-api-6D0OI3:REFRESH_TOKEN_KEY::"
+                }
+            ]
+        }
+    ],
+    "executionRoleArn": "arn:aws:iam::024538648017:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "512",
+    "memory": "1024",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}

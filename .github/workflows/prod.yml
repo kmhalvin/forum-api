@@ -19,3 +19,7 @@ jobs:
       postman_environment_path: '.github/postman/environments/Forum API V2 Test.json'
       docker_image_name: 'kmhalpin/forum-api'
       docker_image_tag: ${{ inputs.docker_image_tag }}
+      dockerhub_username: 'kmhalpin'
+      aws_ecs_task_definition_file_path: '.github/aws/ecs_task.json'
+      aws_ecs_task_definition_container_name: 'forum-api'
+      aws_ecs_service_name: 'forum-api'
