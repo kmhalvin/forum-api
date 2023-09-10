@@ -1,3 +1,4 @@
+name: CI/CD
 on:
   workflow_dispatch:
     inputs:
@@ -11,10 +12,10 @@ jobs:
       project_name: 'forum-api'
       project_environment: 'production'
       project_language: 'nodejs'
-      project_language_version: '14.x'
+      project_language_version: '18.x'
       test_services: '["postgres"]'
       e2e_test_type: 'newman'
       postman_collection_path: '.github/postman/collections/Forum API V2 Test.json'
       postman_environment_path: '.github/postman/environments/Forum API V2 Test.json'
-      docker_image_name: 'forum-api'
+      docker_image_name: 'kmhalpin/forum-api'
       docker_image_tag: ${{ inputs.docker_image_tag }}
