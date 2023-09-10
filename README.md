@@ -1,7 +1,6 @@
 <div id="top"></div>
 
-[![Continuous Integration][ci-shield]][ci-url]
-[![Continuous Deployment][cd-shield]][cd-url]
+[![CI/CD][cicd-shield]][cicd-url]
 
 
 
@@ -117,7 +116,5 @@ Project Link: [https://github.com/kmhalpin/forum-api](https://github.com/kmhalpi
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/kmhalvin
 [product-screenshot]: images/screenshot.png
-[ci-shield]: https://img.shields.io/github/actions/workflow/status/kmhalpin/forum-api/ci.yml?label=Continuous%20Integration&logo=github&style=for-the-badge
-[ci-url]: https://github.com/kmhalpin/forum-api/actions/workflows/ci.yml
-[cd-shield]: https://img.shields.io/github/actions/workflow/status/kmhalpin/forum-api/cd.yml?label=Continuous%20Deployment&logo=github&style=for-the-badge
-[cd-url]: https://github.com/kmhalpin/forum-api/actions/workflows/cd.yml
+[cicd-shield]: https://img.shields.io/github/actions/workflow/status/kmhalpin/forum-api/prod.yml?label=CI%2FCD&logo=github&style=for-the-badge
+[cicd-url]: https://github.com/kmhalpin/forum-api/actions/workflows/prod.yml
