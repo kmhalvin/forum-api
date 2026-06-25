@@ -12,6 +12,12 @@ It features:
 - **Checkout:** A mock payment form that submits an order to the backend (requires authentication).
 - **Admin Dashboard:** A protected route where admins can view and delete users and orders.
 
+### Session Management (Cookies)
+Authentication sessions are managed using **HTTP-only, encrypted cookies** (NextAuth's default JWT strategy).
+- When a user logs in, an encrypted token containing their session data (like `id` and `role`) is stored in a cookie (e.g., `next-auth.session-token`).
+- Since the cookie is `HttpOnly`, it cannot be accessed directly via client-side JavaScript. 
+- For test automation, if you need to bypass the login UI, you would need to programmatically set this cookie or simply automate the login form directly.
+
 ### Test Accounts
 
 | Role | Email | Password |
