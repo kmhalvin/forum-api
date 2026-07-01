@@ -17,11 +17,13 @@ function LoginForm() {
   
   const [email, setEmail] = useState('admin@example.com')
   const [password, setPassword] = useState('admin123')
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
     const res = await signIn('credentials', {
       redirect: false,
@@ -33,6 +35,7 @@ function LoginForm() {
 
     if (res?.error) {
       toast.error('Invalid email or password')
+      setError('Invalid email or password. Please try again.')
     } else {
       toast.success('Logged in successfully')
       router.push(callbackUrl)
@@ -50,6 +53,11 @@ function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {error && (
+            <p className="text-sm font-medium text-red-500" data-testid="login-error-message">
+              {error}
+            </p>
+          )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input 

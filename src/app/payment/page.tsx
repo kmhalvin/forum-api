@@ -15,6 +15,7 @@ export default function PaymentPage() {
   const [mounted, setMounted] = useState(false)
   const { items, getTotal, clearCart } = useCartStore()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const router = useRouter()
   const { data: session, status } = useSession()
 
@@ -47,6 +48,7 @@ export default function PaymentPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
     try {
       // Simulate network delay for testing
@@ -66,8 +68,9 @@ export default function PaymentPage() {
       toast.success('Payment successful! Order placed.')
       clearCart()
       router.push('/payment/success')
-    } catch (error) {
+    } catch (error: any) {
       toast.error('Payment failed. Please try again.')
+      setError(error.message || 'Payment failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -84,6 +87,11 @@ export default function PaymentPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {error && (
+              <p className="text-sm font-medium text-red-500" data-testid="payment-error-message">
+                {error}
+              </p>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name">Name on Card</Label>
               <Input id="name" required placeholder="John Doe" data-testid="payment-name-input" />

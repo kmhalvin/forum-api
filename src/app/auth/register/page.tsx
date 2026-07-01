@@ -14,11 +14,13 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
     try {
       const response = await fetch('/api/auth/register', {
@@ -39,6 +41,7 @@ export default function RegisterPage() {
       router.push('/auth/login')
     } catch (error: any) {
       toast.error(error.message)
+      setError(error.message)
     } finally {
       setLoading(false)
     }
@@ -55,6 +58,11 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {error && (
+              <p className="text-sm font-medium text-red-500" data-testid="register-error-message">
+                {error}
+              </p>
+            )}
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input 

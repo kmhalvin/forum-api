@@ -71,6 +71,7 @@ To make testing easier and less brittle, almost all interactive and structural e
 ### Login Page (`/auth/login`)
 - `login-page`: Container for the login page.
 - `login-form`: The form element.
+- `login-error-message`: The error message paragraph (only renders if login fails).
 - `login-email-input`: Email input field.
 - `login-password-input`: Password input field.
 - `login-submit-btn`: The submit button.
@@ -79,6 +80,7 @@ To make testing easier and less brittle, almost all interactive and structural e
 ### Register Page (`/auth/register`)
 - `register-page`: Container for the register page.
 - `register-form`: The form element.
+- `register-error-message`: The error message paragraph (only renders if registration fails).
 - `register-name-input`: Name input field.
 - `register-email-input`: Email input field.
 - `register-password-input`: Password input field.
@@ -91,6 +93,7 @@ To make testing easier and less brittle, almost all interactive and structural e
 - `login-to-pay-btn`: Button to navigate to login from the unauthenticated state.
 - `payment-empty-cart`: Container shown if the user reaches payment with an empty cart.
 - `payment-form`: The payment form element.
+- `payment-error-message`: The error message paragraph (only renders if payment fails).
 - `payment-total`: The total amount displayed above the form.
 - `payment-name-input`: Name on card input.
 - `payment-card-input`: Card number input.
